@@ -9,6 +9,8 @@ namespace Labb4azure
 {
     public class User
     {
+        [JsonProperty(PropertyName = "id")]
         public string email { get; set; }
+        public string profilePicture { get; set; }
     }
 }

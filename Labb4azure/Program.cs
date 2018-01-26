@@ -56,6 +56,14 @@ namespace Labb4azure
             await this.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("Labb4"), new DocumentCollection { Id = "User" });
             await this.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("Labb4"), new DocumentCollection { Id = "ReviewQueue" });
             await this.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("Labb4"), new DocumentCollection { Id = "ApprovedPictures" });
+
+            User newUser = new User
+            {
+                email = "Johanna",
+                profilePicture = "image.jpg"
+            };
+
+            await this.CreateUserDocumentIfNotExists("Labb4", "User", newUser);
         }
 
         private void WriteToConsoleAndPromptToContinue(string format, params object[] args)
@@ -64,8 +72,33 @@ namespace Labb4azure
             Console.WriteLine("Press any key to continue ...");
             Console.ReadKey();
         }
+
+        private async Task CreateUserDocumentIfNotExists(string databaseName, string collectionName, User user)
+        {
+            try
+            {
+                await this.client.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, user.email));
+                this.WriteToConsoleAndPromptToContinue("Found {0}", user.email);
+            }
+            catch (DocumentClientException de)
+            {
+                if (de.StatusCode == HttpStatusCode.NotFound)
+                {
+                    await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), user);
+                    this.WriteToConsoleAndPromptToContinue("Created user {0}", user.email);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
     }
 }
+
+
+
+
 //SqlConnection conn = new SqlConnection(connectionString);
 //string emailQuery = "INSERT INTO user (email) VALUES ('" + email + "')";
 //SqlCommand command = new SqlCommand(emailQuery, conn);
