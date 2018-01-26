@@ -10,6 +10,7 @@ using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 
+
 namespace Labb4azure
 {
     public class Program
@@ -39,10 +40,22 @@ namespace Labb4azure
             }
             finally
             {
-                Console.WriteLine("Press any key to exit.");
+                Console.WriteLine("\nPress any key to exit...");
                 Console.ReadKey();
             }
         }
+
+        public void ViewReviewQueue()
+        {
+    //        IQueryable<User> query = client.CreateDocumentQuery<User>(
+    //UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue")).Where(m => m.email == email && m.profilePicture == "");
+
+    //        foreach (var item in collection)
+    //        {
+    //            Console.WriteLine();
+    //        }
+        }
+
 
         private async Task GetStartedDemo()
         {
@@ -65,6 +78,17 @@ namespace Labb4azure
 
             await this.CreateUserDocumentIfNotExists("Labb4", "User", newUser);
             await this.CreateReviewDocumentIfNotExists("Labb4", "ReviewQueue", newUser);
+
+            FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+            Console.WriteLine("\nThe review queue: ");
+            IQueryable<User> userSql = this.client.CreateDocumentQuery<User>(
+        UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue"),
+        "SELECT * FROM User", queryOptions);
+
+            foreach (var item in userSql)
+            {
+                Console.WriteLine(item.profilePicture);
+            }
         }
 
         private void WriteToConsoleAndPromptToContinue(string format, params object[] args)
@@ -115,36 +139,3 @@ namespace Labb4azure
         }
     }
 }
-
-
-
-
-//SqlConnection conn = new SqlConnection(connectionString);
-//string emailQuery = "INSERT INTO user (email) VALUES ('" + email + "')";
-//SqlCommand command = new SqlCommand(emailQuery, conn);
-//try
-//{
-//    conn.Open();
-//    command.ExecuteNonQuery();
-//}
-//catch (SqlException ex) { }
-
-//string reviewQueueQuery = "INSERT INTO reviewQueue (picture) VALUES ('" + picture + "')";
-//SqlCommand command2 = new SqlCommand(reviewQueueQuery, conn);
-//try
-//{
-//    conn.Open();
-//    command2.ExecuteNonQuery();
-//}
-//catch (SqlException ex) { }
-
-//ska föras över till från reviewQueue till approvedPicture efter att den blivit godkänd????
-
-//string approvedPictureQuery = "INSERT INTO reviewQueue (picture) VALUES ('" + picture + "')"; 
-//SqlCommand command3 = new SqlCommand(approvedPictureQuery, conn);
-//try
-//{
-//    conn.Open();
-//    command3.ExecuteNonQuery();
-//}
-//catch (SqlException ex) { }

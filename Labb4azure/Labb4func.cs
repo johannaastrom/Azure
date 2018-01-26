@@ -10,6 +10,9 @@ namespace Labb4azure
 {
     public static class Function1
     {
+        //static string endpoint = ConfigurationManager.AppSettings["Endpoint"];
+        //static string authKey = ConfigurationManager.AppSettings["AuthKey"];
+
         [FunctionName("Function1")] //detta används för att trigga eventet
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log) //denna metod kan man se som main eller en funktion som registrerar ett event
         {
@@ -24,8 +27,7 @@ namespace Labb4azure
                             select x.Value).FirstOrDefault();
             //?name=Johanna&lastname=Astrom
 
-
-            if (name == null || lastname == null)
+            if (email == null || profilePicture == null)
             {
                 return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass an email or a profile picture on the query string.");
             }
