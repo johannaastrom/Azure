@@ -22,11 +22,6 @@ namespace Labb4azure
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter your email adress: ");
-            string email = Console.ReadLine();
-            Console.WriteLine("Upload your profile picture: ");
-            string picture = Console.ReadLine();
-
             try
             {
                 Program p = new Program();
@@ -44,13 +39,18 @@ namespace Labb4azure
             }
             finally
             {
-                Console.WriteLine("End of demo, press any key to exit.");
+                Console.WriteLine("Press any key to exit.");
                 Console.ReadKey();
             }
         }
 
         private async Task GetStartedDemo()
         {
+            Console.WriteLine("Enter your email adress: ");
+            string email = Console.ReadLine();
+            Console.WriteLine("Upload your profile picture: ");
+            string picture = Console.ReadLine();
+
             this.client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey);
             await this.client.CreateDatabaseIfNotExistsAsync(new Database { Id = "Labb4" });
             await this.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("Labb4"), new DocumentCollection { Id = "User" });
@@ -59,18 +59,19 @@ namespace Labb4azure
 
             User newUser = new User
             {
-                email = "Johanna",
-                profilePicture = "image.jpg"
+                email = email,
+                profilePicture = picture
             };
 
             await this.CreateUserDocumentIfNotExists("Labb4", "User", newUser);
+            await this.CreateReviewDocumentIfNotExists("Labb4", "ReviewQueue", newUser);
         }
 
         private void WriteToConsoleAndPromptToContinue(string format, params object[] args)
         {
             Console.WriteLine(format, args);
-            Console.WriteLine("Press any key to continue ...");
-            Console.ReadKey();
+            Console.WriteLine("Success!");
+            //Console.ReadKey();
         }
 
         private async Task CreateUserDocumentIfNotExists(string databaseName, string collectionName, User user)
@@ -86,6 +87,25 @@ namespace Labb4azure
                 {
                     await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), user);
                     this.WriteToConsoleAndPromptToContinue("Created user {0}", user.email);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+        private async Task CreateReviewDocumentIfNotExists(string databaseName, string collectionName, User user)
+        {
+            try
+            {
+                await this.client.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, user.profilePicture));
+                this.WriteToConsoleAndPromptToContinue("Found {0}", user.profilePicture);
+            }
+            catch (DocumentClientException de)
+            {
+                if (de.StatusCode == HttpStatusCode.NotFound)
+                {
+                    await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), user);
                 }
                 else
                 {
