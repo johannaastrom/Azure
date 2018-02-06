@@ -19,7 +19,7 @@ namespace Labb4azure
         private const string PrimaryKey = "VLUD2P8PI5IRSZFJhgTpUWnPa8N1iFksQbExla4bRHLb661nhdiTyRLXIVv9WzJ2e5jTQzdrFtyjy8CB1HYPkA==";
         private DocumentClient client;
 
-        public const string connectionString = @"AccountEndpoint=https://labb4server.documents.azure.com:443/;AccountKey=VLUD2P8PI5IRSZFJhgTpUWnPa8N1iFksQbExla4bRHLb661nhdiTyRLXIVv9WzJ2e5jTQzdrFtyjy8CB1HYPkA==;";
+        //public const string connectionString = @"AccountEndpoint=https://labb4server.documents.azure.com:443/;AccountKey=VLUD2P8PI5IRSZFJhgTpUWnPa8N1iFksQbExla4bRHLb661nhdiTyRLXIVv9WzJ2e5jTQzdrFtyjy8CB1HYPkA==;";
 
         static void Main(string[] args)
         {
@@ -47,13 +47,13 @@ namespace Labb4azure
 
         public void ViewReviewQueue()
         {
-    //        IQueryable<User> query = client.CreateDocumentQuery<User>(
-    //UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue")).Where(m => m.email == email && m.profilePicture == "");
+            //        IQueryable<User> query = client.CreateDocumentQuery<User>(
+            //        UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue")).Where(m => m.email == email && m.profilePicture == "");
 
-    //        foreach (var item in collection)
-    //        {
-    //            Console.WriteLine();
-    //        }
+            //        foreach (var item in collection)
+            //        {
+            //            Console.WriteLine();
+            //        }
         }
 
 
@@ -95,7 +95,7 @@ namespace Labb4azure
         {
             Console.WriteLine(format, args);
             Console.WriteLine("Success!");
-            //Console.ReadKey();
+            Console.ReadKey();
         }
 
         private async Task CreateUserDocumentIfNotExists(string databaseName, string collectionName, User user)
