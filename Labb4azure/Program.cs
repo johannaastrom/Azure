@@ -88,7 +88,7 @@ namespace Labb4azure
             Console.WriteLine("Success!");
         }
 
-        //Method with condition to create new user if it doesnt already exist in the database.
+        //Methods with condition to create new user if it doesnt already exist in the database.
         private async Task CreateUserDocumentIfNotExists(string databaseName, string collectionName, User user)
         {
             try
@@ -109,6 +109,7 @@ namespace Labb4azure
                 }
             }
         }
+
         private async Task CreateReviewDocumentIfNotExists(string databaseName, string collectionName, User user)
         {
             try
