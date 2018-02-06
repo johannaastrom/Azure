@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System;
 using System.Collections.Concurrent;
 using System.Text;
+using Microsoft.Azure.Documents.Client;
 
 namespace Labb4azure
 {
@@ -27,10 +28,20 @@ namespace Labb4azure
                 .FirstOrDefault(q => string.Compare(q.Key, "id", true) == 0)
                 .Value;
 
+            // Get request body
+            dynamic data = await req.Content.ReadAsAsync<object>();
+
+            // Set name to query string or body data
+            mode = mode ?? data?.mode;
+
             if (mode == "viewReviewQueue")
             {
                 var picture = GetPicture(mode);
                 return req.CreateResponse(HttpStatusCode.OK, picture, "application/json");
+            }
+            else
+            {
+                return req.CreateResponse(HttpStatusCode.BadRequest, "lol noob");
             }
 
         }
@@ -46,7 +57,7 @@ namespace Labb4azure
 
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
             Console.WriteLine("\nThe review queue: ");
-            IQueryable<User> userSql = this.client.CreateDocumentQuery<User>(UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue"),
+            IQueryable<User> userSql = client.CreateDocumentQuery<User>(UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue"),
         "SELECT * FROM User", queryOptions);
 
             var picture = userSql.ToList();
