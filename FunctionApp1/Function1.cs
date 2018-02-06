@@ -23,19 +23,9 @@ namespace Labb4azure
             log.Info("C# HTTP trigger function processed a request.");
 
             // parse query parameter
-            string id = req.GetQueryNameValuePairs()
+            string mode = req.GetQueryNameValuePairs()
                 .FirstOrDefault(q => string.Compare(q.Key, "id", true) == 0)
                 .Value;
-
-            //// Get request body
-            //dynamic data = await req.Content.ReadAsAsync<object>();
-
-            //// Set name to query string or body data
-            //name = name ?? data?.name;
-
-            return name == null
-                ? req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body")
-                : req.CreateResponse(HttpStatusCode.OK, "Hello " + name);
 
             if (mode == "viewReviewQueue")
             {
@@ -45,25 +35,34 @@ namespace Labb4azure
 
         }
 
-        private static List<ReviewQueue> GetPicture(string email)
+        private static List<User> GetPicture(string email)
         {
             string EndpointUrl = "https://labb4server.documents.azure.com:443/";
             string PrimaryKey = "VLUD2P8PI5IRSZFJhgTpUWnPa8N1iFksQbExla4bRHLb661nhdiTyRLXIVv9WzJ2e5jTQzdrFtyjy8CB1HYPkA==";
-            string databaseName = "Labb4";
-            string collectionName = "ReviewQueue";
+            //string databaseName = "Labb4";
+            //string collectionName = "ReviewQueue";
             //string toCollectionName = "ApprovedPictures";
             var client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey);
+
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
             Console.WriteLine("\nThe review queue: ");
             IQueryable<User> userSql = this.client.CreateDocumentQuery<User>(UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue"),
         "SELECT * FROM User", queryOptions);
 
-            foreach (var item in userSql)
-            {
-                Console.WriteLine(item.profilePicture);
-            }
-            var picture = query.ToList();
+            var picture = userSql.ToList();
             return picture;
         }
+    }
+
+    public class ReviewQueue
+    {
+        public string reviewPicture { get; set; }
+    }
+
+    public class User
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string email { get; set; }
+        public string profilePicture { get; set; }
     }
 }
