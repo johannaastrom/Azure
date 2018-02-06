@@ -10,7 +10,6 @@ using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 
-
 namespace Labb4azure
 {
     public class Program
@@ -26,7 +25,7 @@ namespace Labb4azure
             try
             {
                 Program p = new Program();
-                p.GetStartedDemo().Wait();
+                p.CreateUser().Wait();
             }
             catch (DocumentClientException de)
             {
@@ -45,6 +44,7 @@ namespace Labb4azure
             }
         }
 
+        //Method that gets data from the database
         public void ViewReviewQueue()
         {
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
@@ -58,8 +58,8 @@ namespace Labb4azure
             }
         }
 
-
-        private async Task GetStartedDemo()
+        //Method to create user and connect to database.
+        private async Task CreateUser()
         {
             Console.WriteLine("Enter your email adress: ");
             string email = Console.ReadLine();
@@ -88,9 +88,9 @@ namespace Labb4azure
         {
             Console.WriteLine(format, args);
             Console.WriteLine("Success!");
-            Console.ReadKey();
         }
 
+        //Method with condition to create new user if it doesnt already exist in the database.
         private async Task CreateUserDocumentIfNotExists(string databaseName, string collectionName, User user)
         {
             try

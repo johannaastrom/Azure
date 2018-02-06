@@ -25,34 +25,31 @@ namespace Labb4azure
 
             // parse query parameter
             string mode = req.GetQueryNameValuePairs()
-                .FirstOrDefault(q => string.Compare(q.Key, "id", true) == 0)
+                .FirstOrDefault(q => string.Compare(q.Key, "mode", true) == 0)
                 .Value;
 
             // Get request body
             dynamic data = await req.Content.ReadAsAsync<object>();
 
-            // Set name to query string or body data
+            // Set mode to query string or body data
             mode = mode ?? data?.mode;
 
             if (mode == "viewReviewQueue")
             {
-                var picture = GetPicture(mode);
+                var picture = UsersInReviewQueue(mode);
                 return req.CreateResponse(HttpStatusCode.OK, picture, "application/json");
             }
             else
             {
                 return req.CreateResponse(HttpStatusCode.BadRequest, "lol noob");
             }
-
         }
 
-        private static List<User> GetPicture(string email)
+        //Lista på alla rader i reviewQueue i CosmosDb
+        private static List<User> UsersInReviewQueue(string email)
         {
             string EndpointUrl = "https://labb4server.documents.azure.com:443/";
             string PrimaryKey = "VLUD2P8PI5IRSZFJhgTpUWnPa8N1iFksQbExla4bRHLb661nhdiTyRLXIVv9WzJ2e5jTQzdrFtyjy8CB1HYPkA==";
-            //string databaseName = "Labb4";
-            //string collectionName = "ReviewQueue";
-            //string toCollectionName = "ApprovedPictures";
             var client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey);
 
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
@@ -60,8 +57,8 @@ namespace Labb4azure
             IQueryable<User> userSql = client.CreateDocumentQuery<User>(UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue"),
         "SELECT * FROM User", queryOptions);
 
-            var picture = userSql.ToList();
-            return picture;
+            var user = userSql.ToList();
+            return user;
         }
     }
 
