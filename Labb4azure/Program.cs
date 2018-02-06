@@ -18,8 +18,6 @@ namespace Labb4azure
         private const string PrimaryKey = "VLUD2P8PI5IRSZFJhgTpUWnPa8N1iFksQbExla4bRHLb661nhdiTyRLXIVv9WzJ2e5jTQzdrFtyjy8CB1HYPkA==";
         private DocumentClient client;
 
-        //public const string connectionString = @"AccountEndpoint=https://labb4server.documents.azure.com:443/;AccountKey=VLUD2P8PI5IRSZFJhgTpUWnPa8N1iFksQbExla4bRHLb661nhdiTyRLXIVv9WzJ2e5jTQzdrFtyjy8CB1HYPkA==;";
-
         static void Main(string[] args)
         {
             try
