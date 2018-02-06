@@ -47,13 +47,15 @@ namespace Labb4azure
 
         public void ViewReviewQueue()
         {
-            //        IQueryable<User> query = client.CreateDocumentQuery<User>(
-            //        UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue")).Where(m => m.email == email && m.profilePicture == "");
+            FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+            Console.WriteLine("\nThe review queue: ");
+            IQueryable<User> userSql = this.client.CreateDocumentQuery<User>(UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue"),
+        "SELECT * FROM User", queryOptions);
 
-            //        foreach (var item in collection)
-            //        {
-            //            Console.WriteLine();
-            //        }
+            foreach (var item in userSql)
+            {
+                Console.WriteLine(item.profilePicture);
+            }
         }
 
 
@@ -79,16 +81,7 @@ namespace Labb4azure
             await this.CreateUserDocumentIfNotExists("Labb4", "User", newUser);
             await this.CreateReviewDocumentIfNotExists("Labb4", "ReviewQueue", newUser);
 
-            FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
-            Console.WriteLine("\nThe review queue: ");
-            IQueryable<User> userSql = this.client.CreateDocumentQuery<User>(
-        UriFactory.CreateDocumentCollectionUri("Labb4", "ReviewQueue"),
-        "SELECT * FROM User", queryOptions);
-
-            foreach (var item in userSql)
-            {
-                Console.WriteLine(item.profilePicture);
-            }
+            ViewReviewQueue();
         }
 
         private void WriteToConsoleAndPromptToContinue(string format, params object[] args)
